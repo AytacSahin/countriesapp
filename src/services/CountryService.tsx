@@ -19,5 +19,5 @@ query {
 `;
 
 export const useCountryQuery = () => {
-    return useQuery(COUNTRIES_QUERY);
+  return useQuery(COUNTRIES_QUERY);
 };

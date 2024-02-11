@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface CountryCardProps {
     country: {
@@ -27,8 +27,8 @@ const CountryCard: React.FC<CountryCardProps> = ({ country, onCountryClick, isSe
             className={`flex items-center bg-[#f5f5f5] mt-2 rounded-lg cursor-pointer ${isSelected ? 'bg-red-100' : ''}`}
             onClick={handleClick}
         >
-            <div className='text-[#333333] p-1 px-3 flex justify-center items-center'>
-                <div className='w-12 h-12 bg-red-200 rounded-full flex justify-center items-center pt-1'>
+            <div className='p-1 px-3 flex justify-center items-center'>
+                <div className={`w-12 h-12 bg-red-200 rounded-full flex justify-center items-center pt-1 ${!isSelected ? 'bg-red-100 text-[#333333]' : 'bg-red-900 text-[#F5F5F5]'}`}>
                     <h1 className='text-[24px] font-extrabold tracking-[1px]'>{country.code}</h1>
                 </div>
             </div>

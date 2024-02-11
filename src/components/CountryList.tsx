@@ -4,6 +4,7 @@ import CountryCard from './CountryCard';
 import SearchInput from './SearchInput';
 import GroupByDropdown from './GroupByDropdown';
 import ClearButton from './ClearButton';
+import CountryUniqDisplay from './CountryUniqDisplay';
 
 interface Language {
     code: string;
@@ -35,48 +36,51 @@ const CountryList: React.FC = () => {
 
     const handleCountryClick = (code: string) => {
         setSelectedCountry((prevSelected) => (prevSelected === code ? null : code));
+        console.log(code);
     };
 
     const handleFilter = () => {
-        let filteredCountries = data?.countries || [];
+        setGroupedCountries((prevGrouped) => {
+            let filteredCountries = data?.countries || [];
 
-        filteredCountries = filteredCountries.filter((country: Country) =>
-            country.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+            filteredCountries = filteredCountries.filter((country: Country) =>
+                country.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
 
-        if (groupBy) {
-            const grouped = filteredCountries.reduce((result: Record<string, Country[]>, country: Country) => {
-                let groupByValue: string | string[];
+            if (groupBy) {
+                const grouped = filteredCountries.reduce((result: Record<string, Country[]>, country: Country) => {
+                    let groupByValue: string | string[];
 
-                if (groupBy === 'languages') {
-                    groupByValue = country.languages.map(lang => lang.name);
-                } else if (groupBy === 'continent') {
-                    groupByValue = country.continent.name;
-                } else {
-                    groupByValue = country[groupBy] as string;
-                }
-
-                if (Array.isArray(groupByValue)) {
-                    groupByValue.forEach(value => {
-                        if (!result[value]) {
-                            result[value] = [];
-                        }
-                        result[value].push(country);
-                    });
-                } else {
-                    if (!result[groupByValue]) {
-                        result[groupByValue] = [];
+                    if (groupBy === 'languages') {
+                        groupByValue = country.languages.map(lang => lang.name);
+                    } else if (groupBy === 'continent') {
+                        groupByValue = country.continent.name;
+                    } else {
+                        groupByValue = country[groupBy] as string;
                     }
-                    result[groupByValue].push(country);
-                }
 
-                return result;
-            }, {});
+                    if (Array.isArray(groupByValue)) {
+                        groupByValue.forEach(value => {
+                            if (!result[value]) {
+                                result[value] = [];
+                            }
+                            result[value].push(country);
+                        });
+                    } else {
+                        if (!result[groupByValue]) {
+                            result[groupByValue] = [];
+                        }
+                        result[groupByValue].push(country);
+                    }
 
-            setGroupedCountries(grouped);
-        } else {
-            setGroupedCountries({ 'All': filteredCountries });
-        }
+                    return result;
+                }, {});
+
+                return grouped;
+            } else {
+                return { 'All': filteredCountries };
+            }
+        });
     };
 
     const clearFilter = () => {
@@ -87,23 +91,28 @@ const CountryList: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!loading && !error) {
-            handleFilter();
+        // Yüklenen veri sayısına göre varsayılan seçili ülkeyi belirle
+        const totalCountries = Object.values(groupedCountries).flat();
+        const defaultSelectedIndex = totalCountries.length >= 10 ? 9 : totalCountries.length - 1;
 
-            // Yüklenen veri sayısına göre varsayılan seçili ülkeyi belirle
-            const totalCountries = Object.values(groupedCountries).flat();
-            const defaultSelectedIndex = totalCountries.length >= 10 ? 9 : totalCountries.length - 1;
-
-            if (totalCountries.length > 0) {
-                const defaultSelectedCountry = totalCountries[defaultSelectedIndex];
-                if (defaultSelectedCountry) {
-                    setSelectedCountry(defaultSelectedCountry.code);
-                }
+        if (totalCountries.length > 0) {
+            const defaultSelectedCountry = totalCountries[defaultSelectedIndex];
+            if (defaultSelectedCountry) {
+                setSelectedCountry(defaultSelectedCountry.code);
             }
         }
-    }, [loading, error, data, searchQuery, groupBy, groupedCountries]);
+    }, [groupedCountries]);
 
+    useEffect(() => {
+        if (!loading && !error) {
+            handleFilter();
+        }
+        // eslint-disable-next-line
+    }, [loading, error, data, searchQuery, groupBy]);
+
+    // eslint-disable-next-line
     if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
+    // eslint-disable-next-line
     if (error) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl  p-10 rounded-lg'>Error: {error.message}</p></div>;
 
     const totalPages = Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE);
@@ -124,26 +133,31 @@ const CountryList: React.FC = () => {
             </div>
 
             {/* Display grouped countries */}
-            <ul>
-                {Object.entries(groupedCountries).map(([group, countries]) => (
-                    <li key={group}>
-                        <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
-                        <ul>
-                            {countries?.slice(startIndex, endIndex).map((country: Country) => (
-                                <li key={country.code}>
-                                    <CountryCard
-                                        country={country}
-                                        onCountryClick={handleCountryClick}
-                                        isSelected={selectedCountry === country.code}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-            </ul>
+            <div className='flex'>
+                <div className='w-[80%]'>
+                    <ul>
+                        {Object.entries(groupedCountries).map(([group, countries]) => (
+                            <li key={group}>
+                                <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
+                                <ul>
+                                    {countries?.slice(startIndex, endIndex).map((country: Country) => (
+                                        <li key={country.code}>
+                                            <CountryCard
+                                                country={country}
+                                                onCountryClick={handleCountryClick}
+                                                isSelected={selectedCountry === country.code}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <CountryUniqDisplay countryCode={selectedCountry} />
+            </div>
             {/* Pagination */}
-            <div className="flex justify-center mt-4">
+            <div className="flex flex-wrap justify-center gap-2 my-4">
                 {visiblePages.map((page) => (
                     <button
                         key={page}
