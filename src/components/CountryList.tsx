@@ -31,6 +31,11 @@ const CountryList: React.FC = () => {
     const [groupBy, setGroupBy] = useState<string>('');
     const [groupedCountries, setGroupedCountries] = useState<Record<string, Country[] | undefined>>({});
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
+    const handleCountryClick = (code: string) => {
+        setSelectedCountry((prevSelected) => (prevSelected === code ? null : code));
+    };
 
     const handleFilter = () => {
         let filteredCountries = data?.countries || [];
@@ -75,6 +80,7 @@ const CountryList: React.FC = () => {
     };
 
     const clearFilter = () => {
+        setCurrentPage(1);
         setGroupBy('');
         setSearchQuery('');
         setGroupedCountries({ 'All': data?.countries || [] });
@@ -83,11 +89,22 @@ const CountryList: React.FC = () => {
     useEffect(() => {
         if (!loading && !error) {
             handleFilter();
+
+            // Yüklenen veri sayısına göre varsayılan seçili ülkeyi belirle
+            const totalCountries = Object.values(groupedCountries).flat();
+            const defaultSelectedIndex = totalCountries.length >= 10 ? 9 : totalCountries.length - 1;
+
+            if (totalCountries.length > 0) {
+                const defaultSelectedCountry = totalCountries[defaultSelectedIndex];
+                if (defaultSelectedCountry) {
+                    setSelectedCountry(defaultSelectedCountry.code);
+                }
+            }
         }
-    }, [loading, error, data, searchQuery, groupBy]);
+    }, [loading, error, data, searchQuery, groupBy, groupedCountries]);
 
     if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
-    if (error) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Error: {error.message}</p></div>;
+    if (error) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl  p-10 rounded-lg'>Error: {error.message}</p></div>;
 
     const totalPages = Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -114,7 +131,11 @@ const CountryList: React.FC = () => {
                         <ul>
                             {countries?.slice(startIndex, endIndex).map((country: Country) => (
                                 <li key={country.code}>
-                                    <CountryCard country={country} />
+                                    <CountryCard
+                                        country={country}
+                                        onCountryClick={handleCountryClick}
+                                        isSelected={selectedCountry === country.code}
+                                    />
                                 </li>
                             ))}
                         </ul>
@@ -127,7 +148,7 @@ const CountryList: React.FC = () => {
                     <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`text-sm mx-2 px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
+                        className={`text-sm mx-2 px-3 py-1 rounded ${currentPage === page ? 'bg-red-300 text-white' : 'bg-gray-300 text-gray-700'
                             } hover:bg-blue-600 hover:text-white focus:outline-none`}
                     >
                         {page}

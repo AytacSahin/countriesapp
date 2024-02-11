@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface CountryCardProps {
     country: {
@@ -11,17 +11,25 @@ interface CountryCardProps {
         }[];
         continent: {
             name: string;
-        }
+        };
     };
+    onCountryClick: (code: string) => void;
+    isSelected: boolean;
 }
 
-const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
+const CountryCard: React.FC<CountryCardProps> = ({ country, onCountryClick, isSelected }) => {
+    const handleClick = () => {
+        onCountryClick(country.code);
+    };
 
     return (
-        <div className='flex items-center bg-[#f5f5f5] mt-2 rounded-lg'>
+        <div
+            className={`flex items-center bg-[#f5f5f5] mt-2 rounded-lg cursor-pointer ${isSelected ? 'bg-red-100' : ''}`}
+            onClick={handleClick}
+        >
             <div className='text-[#333333] p-1 px-3 flex justify-center items-center'>
-                <div className='w-12 h-12 bg-gray-400 rounded-full flex justify-center items-center'>
-                    <h1 className='text-[20px] font-light tracking-[1px]'>{country.code}</h1>
+                <div className='w-12 h-12 bg-red-200 rounded-full flex justify-center items-center pt-1'>
+                    <h1 className='text-[24px] font-extrabold tracking-[1px]'>{country.code}</h1>
                 </div>
             </div>
 
@@ -42,8 +50,8 @@ const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
                         <p className='mr-1 font-semibold'>Languages:</p>
                         <p className='flex flex-wrap'>
                             {country.languages.map((language: any, index: number) => (
-                                <div>
-                                    <span key={language.code}>
+                                <div key={language.code}>
+                                    <span>
                                         {index > 0 && ', '} {language.name + " (" + language.native + ")"}
                                     </span>
                                 </div>
