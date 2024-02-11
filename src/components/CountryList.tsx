@@ -1,20 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCountryQuery } from '../services/CountryService';
+import CountryCard from './CountryCard';
 
 const CountryList: React.FC = () => {
     const { loading, error, data } = useCountryQuery();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [groupBy, setGroupBy] = useState('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [groupBy, setGroupBy] = useState<string>('');
+    const [groupValue, setGroupValue] = useState<string>('');
+    const [filteredCountries, setFilteredCountries] = useState<any[]>([]);
 
-    // to do: try catch içine alabilirim sonra.
+    const handleFilter = () => {
+        let filteredCountries = data?.countries || [];
+
+        filteredCountries = filteredCountries.filter((country: any) =>
+            country.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        if (groupBy && groupValue) {
+            filteredCountries = filteredCountries.filter((country: any) => {
+                const groupByValue = country[groupBy];
+
+                if (Array.isArray(groupByValue)) {
+                    return groupByValue.some((lang: any) =>
+                        lang.name.toLowerCase().includes(groupValue.toLowerCase())
+                    );
+                } else {
+                    return groupByValue.toLowerCase().includes(groupValue.toLowerCase());
+                }
+            });
+        }
+        setFilteredCountries(filteredCountries);
+    };
+
+    const clearFilter = () => {
+        setGroupBy('');
+        setGroupValue('');
+        setFilteredCountries(data?.countries || []);
+    };
+
+    useEffect(() => {
+        if (!loading && !error) {
+            handleFilter();
+        }
+    }, [loading, error, data, searchQuery, groupBy, groupValue]);
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;
-
-    const filteredCountries = data.countries
-        .filter((country: any) => country.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        .filter((country: any) => groupBy === '' || country.languages.some((lang: any) => lang.name.toLowerCase().includes(groupBy.toLowerCase())));
-
-    const uniqueGroupByOptions: string[] = ["name", "code", "languages"];
 
     return (
         <div>
@@ -30,28 +61,22 @@ const CountryList: React.FC = () => {
                     onChange={(e) => setGroupBy(e.target.value)}
                 >
                     <option value="">Group By</option>
-                    {uniqueGroupByOptions.map((option: string) => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
+                    <option value="name">Country Name</option>
+                    <option value="code">Country Code</option>
+                    <option value="languages">Languages</option>
                 </select>
+                <input
+                    type="text"
+                    placeholder={`Enter ${groupBy} value`}
+                    value={groupValue}
+                    onChange={(e) => setGroupValue(e.target.value)}
+                />
+                <button onClick={handleFilter}>Filter</button>
+                <button onClick={clearFilter}>Clear Filter</button>
             </div>
             <ul>
                 {filteredCountries.map((country: any) => (
-                    <div style={{ backgroundColor: '#F0F0F0', marginBottom: '30px' }} key={country.code}>
-                        <h2>Country Name: {country.name} </h2>
-                        <h4>Code: {country.code}</h4>
-                        <div>
-                            <h2>Languages:</h2>
-                            {country.languages.map((language: any) => (
-                                <div key={language.code}>
-                                    <h4>Language Code: {language.code} </h4>
-                                    <h4>Language Name: {language.name}</h4>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <CountryCard key={country.code} country={country} />
                 ))}
             </ul>
         </div>
