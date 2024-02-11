@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useCountryQuery } from '../services/CountryService';
 import CountryCard from './CountryCard';
+import SearchInput from './SearchInput';
+import GroupByDropdown from './GroupByDropdown';
+import ClearButton from './ClearButton';
 
 interface Language {
     code: string;
@@ -8,18 +11,26 @@ interface Language {
     native: string;
 }
 
+interface Continent {
+    name: string;
+}
+
 interface Country {
     code: string;
     name: string;
     languages: Language[];
-    [key: string]: string | Language[]; // Index signature
+    continent: Continent;
+    [key: string]: string | Language[] | Continent;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 const CountryList: React.FC = () => {
     const { loading, error, data } = useCountryQuery();
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [groupBy, setGroupBy] = useState<string>('');
     const [groupedCountries, setGroupedCountries] = useState<Record<string, Country[] | undefined>>({});
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     const handleFilter = () => {
         let filteredCountries = data?.countries || [];
@@ -34,6 +45,8 @@ const CountryList: React.FC = () => {
 
                 if (groupBy === 'languages') {
                     groupByValue = country.languages.map(lang => lang.name);
+                } else if (groupBy === 'continent') {
+                    groupByValue = country.continent.name;
                 } else {
                     groupByValue = country[groupBy] as string;
                 }
@@ -73,40 +86,24 @@ const CountryList: React.FC = () => {
         }
     }, [loading, error, data, searchQuery, groupBy]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
+    if (error) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Error: {error.message}</p></div>;
+
+    const totalPages = Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     return (
         <div className="p-6">
-            <div className='flex justify-between gap-4'>
+            <div className='flex relative justify-between gap-4'>
                 {/* Search input */}
-                <input
-                    type="search"
-                    id="default-search"
-                    className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Search countries..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
                 {/* Group by dropdown */}
-                <select
-                    className="block p-2 pr-10 text-m text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                    value={groupBy}
-                    onChange={(e) => setGroupBy(e.target.value)}
-                >
-                    <option className='text-lg block' value="">Group By</option>
-                    <option className='text-lg block' value="name">Country Name</option>
-                    <option className='text-lg block' value="code">Country Code</option>
-                    <option className='text-lg block' value="languages">Languages</option>
-                </select>
+                <GroupByDropdown value={groupBy} onChange={setGroupBy} />
 
-                <button onClick={clearFilter}
-                    type="button"
-                    className="text-lg text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 font-medium rounded-lg px-10 py-2.5 text-center">
-                    Clear
-                </button>
-
+                <ClearButton onClick={clearFilter} />
             </div>
 
             {/* Display grouped countries */}
@@ -115,7 +112,7 @@ const CountryList: React.FC = () => {
                     <li key={group}>
                         <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
                         <ul>
-                            {countries?.map((country: Country) => (
+                            {countries?.slice(startIndex, endIndex).map((country: Country) => (
                                 <li key={country.code}>
                                     <CountryCard country={country} />
                                 </li>
@@ -124,6 +121,19 @@ const CountryList: React.FC = () => {
                     </li>
                 ))}
             </ul>
+            {/* Pagination */}
+            <div className="flex justify-center mt-4">
+                {visiblePages.map((page) => (
+                    <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`text-sm mx-2 px-3 py-1 rounded ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
+                            } hover:bg-blue-600 hover:text-white focus:outline-none`}
+                    >
+                        {page}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };
