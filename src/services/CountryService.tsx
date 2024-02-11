@@ -1,3 +1,4 @@
+// services/CountryService.ts
 import { gql, useQuery } from '@apollo/client';
 
 export const COUNTRIES_QUERY = gql`
@@ -8,6 +9,7 @@ export const COUNTRIES_QUERY = gql`
             languages {
                 code
                 name
+                native
             }
         }
     }

@@ -7,23 +7,39 @@ interface CountryCardProps {
         languages: {
             code: string;
             name: string;
+            native: string;
         }[];
     };
 }
 
 const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
+
     return (
-        <div style={{ backgroundColor: '#F0F0F0', marginBottom: '30px' }}>
-            <h2 >Country Name: {country.name} </h2>
-            <h4>Code: {country.code}</h4>
-            <div>
-                <h2>Languages:</h2>
-                {country.languages.map((language: any) => (
-                    <div key={language.code}>
-                        <h4>Language Code: {language.code} </h4>
-                        <h4>Language Name: {language.name}</h4>
-                    </div>
-                ))}
+        <div className='flex items-center bg-[#f5f5f5] mt-6 p-2 rounded-lg'>
+            <div className='text-[60px] text-[#333333] font-light leading-8 tracking-widest w-[20%]'>
+                <h1 className='p-2'>{country.code}</h1>
+            </div>
+            <div className=''>
+                <div>
+                    <h2 className='font-semibold inline-block'>Country Name: </h2>
+                    <span>{' ' + country.name}</span>
+                </div>
+                <div>
+                    <h2 className='font-semibold inline-block'>Country Code: </h2>
+                    <span>{' ' + country.code}</span>
+                </div>
+                <div className='flex items-center'>
+                    <p className='mr-1 font-semibold'>Languages:</p>
+                    <p className='flex flex-wrap'>
+                        {country.languages.map((language: any, index: number) => (
+                            <div>
+                                <span key={language.code}>
+                                    {index > 0 && ', '} {language.name + " (" + language.native + ")"}
+                                </span>
+                            </div>
+                        ))}
+                    </p>
+                </div>
             </div>
         </div>
     );
