@@ -14,7 +14,7 @@ interface CountryCardProps {
 const CountryCard: React.FC<CountryCardProps> = ({ country }) => {
     return (
         <div style={{ backgroundColor: '#F0F0F0', marginBottom: '30px' }}>
-            <h2>Country Name: {country.name} </h2>
+            <h2 >Country Name: {country.name} </h2>
             <h4>Code: {country.code}</h4>
             <div>
                 <h2>Languages:</h2>
