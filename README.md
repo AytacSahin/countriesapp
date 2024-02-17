@@ -8,7 +8,8 @@ Bu proje, Apollo Client kullanılarak ülkelerle ilgili GraphQL API'sinden veri 
 
 ## Proje Tanıtım Videosu
 
-[![Proje Tanıtım Videosu]](src/assets/video/screen-record.mp4)
+[[![Proje Tanıtım Videosu]](src/assets/video/screen-record.mp4)
+](https://github.com/AytacSahin/countriesapp/assets/128367430/3ac393f5-26ae-45ae-a0c3-338518616fb9)
 
 ## Kurulum
 
