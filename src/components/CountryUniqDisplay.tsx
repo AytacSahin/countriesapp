@@ -5,10 +5,11 @@ const CountryUniqDisplay: React.FC<{ countryCode: string | null }> = ({ countryC
     const { loading, error, countryDetails } = useCountryDetailsQuery(countryCode || '');
 
     if (error) {
-        return <p className="text-red-500 text-lg">Error: {error.message}</p>;
+        console.log("error:", error.message);
+        return <p className="text-red-500 text-lg w-[500px]">Error: Something went wrong. Please try again later.</p>;
     }
 
-    if (!countryDetails) return <p className="text-black text-4xl">Country details not found.</p>;
+    if (!countryDetails) return <p className="text-black text-4xl w-[400px]">Country details are loading...</p>;
 
     const {
         name,

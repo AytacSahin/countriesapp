@@ -33,13 +33,13 @@ const GroupByDropdown: React.FC<GroupByDropdownProps> = ({ value, onChange }) =>
 
     return (
         <div>
-            <div className="relative group bg-gray-50 rounded-lg">
+            <div className="relative group bg-gray-50 rounded-lg z-20">
                 <button
                     id="dropdown-button"
                     onClick={toggleDropdown}
-                    className="inline-flex w-full text-[20px] text-[#1C242E] border-[#1C242E] focus:outline-none focus:ring-0 focus:border-black px-4 py-4"
+                    className="inline-flex w-full text-[19px] text-[#1C242E] border-[#1C242E] focus:outline-none focus:ring-0 focus:border-black px-4 py-4"
                 >
-                    <span className="w-[80px]">{value === 'name' ? 'Country Name' : value === 'code' ? 'Country Code' : value === 'languages' ? 'Languages' : value === 'continent' ? 'Continent' : 'Group By'}</span>
+                    <span className="w-[114px]">{value === 'name' ? 'Country Name' : value === 'code' ? 'Country Code' : value === 'languages' ? 'Languages' : value === 'continent' ? 'Continent' : 'Group By'}</span>
                     <svg className="w-3 h-3 ms-8 my-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>

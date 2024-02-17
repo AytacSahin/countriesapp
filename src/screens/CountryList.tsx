@@ -86,23 +86,29 @@ const CountryList: React.FC = () => {
 
     useEffect(() => {
         const totalCountries = Object.values(groupedCountries).flat();
-        const defaultSelectedIndex = totalCountries.length > 0 ? 0 : -1;
-
+        const defaultSelectedIndex = totalCountries.length > 0 ? 9 : -1;
+      
         if (totalCountries.length > 0) {
-            const defaultSelectedCountry = totalCountries[defaultSelectedIndex];
-            if (defaultSelectedCountry) {
-                setSelectedCountry(defaultSelectedCountry.code);
-            }
+          const defaultSelectedCountry = totalCountries.length <= 10
+            ? totalCountries[totalCountries.length - 1]
+            : totalCountries[defaultSelectedIndex];
+      
+          if (defaultSelectedCountry) {
+            setSelectedCountry(defaultSelectedCountry.code);
+          }
         }
-    }, [groupedCountries]);
+      }, [groupedCountries]);
 
     useEffect(() => {
         setCurrentPage(0);
         handleFilter();
     }, [loading, error, data, searchQuery, groupBy]);
 
-    if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
-    if (error) return <div className="flex items-center justify-center h-screen"><p className='bg-red-500 text-white text-6xl  p-10 rounded-lg'>Error: {error.message}</p></div>;
+    if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-400 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
+    if (error) {
+        console.log("error:", error.message);
+        return <div className="flex items-center justify-center h-screen"><p className='bg-red-400 text-white text-6xl  p-10 rounded-lg'>Error: Something went wrong. Please try again later.</p></div>;
+    }
 
     const paginatedCountries = Object.entries(groupedCountries).map(([group, countries]) => ({
         group,
@@ -110,50 +116,74 @@ const CountryList: React.FC = () => {
     }));
 
     return (
-        <div className="p-6">
-            <div className='flex relative justify-between gap-4'>
-                <SearchInput value={searchQuery} onChange={setSearchQuery} />
-                <GroupByDropdown value={groupBy} onChange={setGroupBy} />
-                <ClearButton onClick={clearFilter} />
-            </div>
-
-            {/* Display grouped countries */}
-            <div className='flex'>
-                <div className='w-full'>
-                    <ul>
-                        {paginatedCountries.map(({ group, countries }) => (
-                            <li key={group}>
-                                <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
-                                <ul>
-                                    {countries.map((country: Country) => (
-                                        <li key={country.code}>
-                                            <CountryCard
-                                                country={country}
-                                                onCountryClick={handleCountryClick}
-                                                isSelected={selectedCountry === country.code}
-                                            />
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
+        <div className="flex flex-col items-center justify-between h-screen bg-cover bg-center" style={{ backgroundImage: 'url("../../assets/images/bgimage-black.png")' }}>
+            <div className="w-[90%] my-10">
+                <div className='flex relative justify-between gap-4'>
+                    <SearchInput value={searchQuery} onChange={setSearchQuery} />
+                    <GroupByDropdown value={groupBy} onChange={setGroupBy} />
+                    <ClearButton onClick={clearFilter} />
                 </div>
-                <div className='max-w-md ml-6 mt-[50px] p-6 bg-white rounded-lg'>
-                    <CountryUniqDisplay countryCode={selectedCountry} />
-                </div>
-            </div>
 
-            {/* Pagination */}
-            <ReactPaginate
-                pageCount={Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE)}
-                pageRangeDisplayed={3}
-                marginPagesDisplayed={1}
-                onPageChange={({ selected }) => setCurrentPage(selected)}
-                containerClassName="pagination"
-                activeClassName="active"
-            />
+                {/* Display grouped countries */}
+                <div className='flex'>
+                    <div className='w-[90%]'>
+                        <ul>
+                            {groupBy ?
+                                Object.entries(groupedCountries).map(([groupName, countries]) => (
+                                    <li key={groupName}>
+                                        <h2 className="text-xl font-semibold mt-4 text-white">{groupName}</h2>
+                                        <ul>
+                                            {countries?.map((country: Country) => (
+                                                <li key={country.code}>
+                                                    <CountryCard
+                                                        country={country}
+                                                        onCountryClick={handleCountryClick}
+                                                        isSelected={selectedCountry === country.code}
+                                                    />
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))
+                                : paginatedCountries.map(({ group, countries }) => (
+                                    <li key={group}>
+                                        <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
+                                        <ul>
+                                            {countries.map((country: Country) => (
+                                                <li key={country.code}>
+                                                    <CountryCard
+                                                        country={country}
+                                                        onCountryClick={handleCountryClick}
+                                                        isSelected={selectedCountry === country.code}
+                                                    />
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                    <div className='ml-6 max-h-screen flex mt-[50px] p-6 bg-white rounded-lg sticky top-0 z-10'>
+                        <CountryUniqDisplay countryCode={selectedCountry} />
+                    </div>
+                </div>
+
+                {/* Pagination */}
+                {!groupBy && (
+                    <ReactPaginate
+                        className='text-white text-2xl shadow-lg shadow-slate-500 flex justify-between px-32 mt-10 mb-20'
+                        pageCount={Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE)}
+                        pageRangeDisplayed={3}
+                        marginPagesDisplayed={1}
+                        onPageChange={({ selected }) => setCurrentPage(selected)}
+                        containerClassName="pagination"
+                        activeClassName="text-red"
+                    />
+                )}
+            </div>
         </div>
+
     );
 };
 
