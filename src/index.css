@@ -9,3 +9,47 @@ body {
   /* background-color: #00060F; */
   background-color: black;
 }
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.earth-animation {
+  position: absolute;
+  bottom: -680px;
+  animation: rotate 140s infinite linear;
+}
+
+.earth-image {
+  scale: 0.6;
+}
+
+.homeContainer {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 767px) {
+  body {
+    overflow-y: hidden;
+    /* Telefon boyutunda overflow kontrolü */
+  }
+
+  .earth-animation {
+    bottom: 100px;
+    /* İstediğiniz değeri ayarlayın */
+  }
+
+  .earth-image {
+    scale: 0.8;
+    /* İstediğiniz ölçeği ayarlayın */
+  }
+
+  /* Diğer telefon boyutu özel stilleri buraya ekleyebilirsiniz */
+}

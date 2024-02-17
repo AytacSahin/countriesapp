@@ -14,7 +14,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange }) => {
             <input
                 type="search"
                 id="default-search"
-                className="block w-full phone:py-[31px] tablet:py-[18px] desktop:py-[22px] ps-14 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full phone:py-[31px] tablet:py-[18px] desktop:py-[22px] ps-16 pe-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Search countries..."
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
