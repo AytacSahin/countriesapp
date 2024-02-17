@@ -14,8 +14,8 @@ const Home: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-between h-screen bg-cover bg-center" style={{ backgroundImage: `url(${homebg})` }}>
-            <h1 className="my-16 text-6xl font-extrabold text-white dark:text-white md:text-5xl lg:text-6xl border-b-4 border-white">Let's{' '}
+        <div className="flex flex-col items-center justify-between h-screen bg-cover bg-center" style={{ backgroundImage: `url(${homebg})`, backgroundSize: 'cover' }}>
+            <h1 className="phone:flex tablet:inline phone:flex-col tablet:flex-row phone:items-center phone:pb-2 my-16 font-extrabold text-white phone:text-5xl tablet:text-6xl border-b-4 border-white">Let's{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-300 from-sky-500">
                     Discover
                 </span>
@@ -24,10 +24,10 @@ const Home: React.FC = () => {
             <Link to="/countries">
                 <div className='relative flex flex-col items-center'>
                     {isArrowVisible && (
-                        <img className="h-[100px] w-[100px] z-20 absolute -top-6 -left-14" alt='arrow' src={arrowicon}></img>
+                        <img className="h-[100px] w-[100px] z-20 absolute phone:-top-24 tablet:-top-18 phone:left-0 tablet:-left-14" alt='arrow' src={arrowicon}></img>
                     )}
-                    <button type="button" className="h-[150px] w-[400px] text-white border-b-6 border-black bg-gradient-to-br from-green-500 to-blue-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-2xl text-5xl px-10 py-5 text-center mb-10">
-                        Ülkeler Listesi
+                    <button type="button" className=" text-white border-b-6 border-black bg-gradient-to-br from-green-500 to-blue-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-2xl phone:text-4xl tablet:text-5xl px-10 py-5 text-center mb-10">
+                        List Of Countries
                     </button>
                 </div>
             </Link>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCountryQuery } from '../services/CountryService';
+import { Link } from 'react-router-dom';
+
 import CountryCard from '../components/CountryCard';
 import SearchInput from '../components/SearchInput';
 import GroupByDropdown from '../components/GroupByDropdown';
@@ -7,6 +9,8 @@ import ClearButton from '../components/ClearButton';
 import CountryUniqDisplay from '../components/CountryUniqDisplay';
 import ReactPaginate from 'react-paginate';
 
+import homeBgBlack from '../assets/images/bgimage-black.png';
+import arrowleft from '../assets/svg/left-arrow.svg';
 interface Language {
     code: string;
     name: string;
@@ -87,21 +91,23 @@ const CountryList: React.FC = () => {
     useEffect(() => {
         const totalCountries = Object.values(groupedCountries).flat();
         const defaultSelectedIndex = totalCountries.length > 0 ? 9 : -1;
-      
+
         if (totalCountries.length > 0) {
-          const defaultSelectedCountry = totalCountries.length <= 10
-            ? totalCountries[totalCountries.length - 1]
-            : totalCountries[defaultSelectedIndex];
-      
-          if (defaultSelectedCountry) {
-            setSelectedCountry(defaultSelectedCountry.code);
-          }
+            const defaultSelectedCountry = totalCountries.length <= 10
+                ? totalCountries[totalCountries.length - 1]
+                : totalCountries[defaultSelectedIndex];
+
+            if (defaultSelectedCountry) {
+                setSelectedCountry(defaultSelectedCountry.code);
+            }
         }
-      }, [groupedCountries]);
+        // eslint-disable-next-line
+    }, [groupedCountries]);
 
     useEffect(() => {
         setCurrentPage(0);
         handleFilter();
+        // eslint-disable-next-line
     }, [loading, error, data, searchQuery, groupBy]);
 
     if (loading) return <div className="flex items-center justify-center h-screen"><p className='bg-red-400 text-white text-6xl p-10 rounded-lg'>Loading...</p></div>;
@@ -116,15 +122,24 @@ const CountryList: React.FC = () => {
     }));
 
     return (
-        <div className="flex flex-col items-center justify-between h-screen bg-cover bg-center" style={{ backgroundImage: 'url("../../assets/images/bgimage-black.png")' }}>
-            <div className="w-[90%] my-10">
-                <div className='flex relative justify-between gap-4'>
-                    <SearchInput value={searchQuery} onChange={setSearchQuery} />
-                    <GroupByDropdown value={groupBy} onChange={setGroupBy} />
-                    <ClearButton onClick={clearFilter} />
+        <div className="flex flex-col items-center justify-between h-screen bg-cover bg-center pb-6" style={{ backgroundImage: `url(${homeBgBlack})`, backgroundSize: 'cover' }}>
+            <div className="phone:w-[95%] tablet:w-[80%] overscreen:w-[1440px] my-10">
+
+                {/* 1. Section */}
+                <div className='flex w-full'>
+                    <div className='flex w-full h-full items-center'>
+                        <Link to="/">
+                            <img className="w-[50px] h-[50px] hover:scale-125 my-auto" alt='arrow' src={arrowleft}></img>
+                        </Link>
+                        <SearchInput value={searchQuery} onChange={setSearchQuery} />
+                    </div>
+                    <div className='flex justify-center phone:flex-col-reverse tablet:flex-row'>
+                        <GroupByDropdown value={groupBy} onChange={setGroupBy} />
+                        <ClearButton onClick={clearFilter} />
+                    </div>
                 </div>
 
-                {/* Display grouped countries */}
+                {/* 2. Section */}
                 <div className='flex'>
                     <div className='w-[90%]'>
                         <ul>
@@ -133,12 +148,13 @@ const CountryList: React.FC = () => {
                                     <li key={groupName}>
                                         <h2 className="text-xl font-semibold mt-4 text-white">{groupName}</h2>
                                         <ul>
-                                            {countries?.map((country: Country) => (
+                                            {countries?.map((country: Country, index) => (
                                                 <li key={country.code}>
                                                     <CountryCard
                                                         country={country}
                                                         onCountryClick={handleCountryClick}
                                                         isSelected={selectedCountry === country.code}
+                                                        colorCalculaterIndex={index}
                                                     />
                                                 </li>
                                             ))}
@@ -149,12 +165,13 @@ const CountryList: React.FC = () => {
                                     <li key={group}>
                                         <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
                                         <ul>
-                                            {countries.map((country: Country) => (
+                                            {countries.map((country: Country, index) => (
                                                 <li key={country.code}>
                                                     <CountryCard
                                                         country={country}
                                                         onCountryClick={handleCountryClick}
                                                         isSelected={selectedCountry === country.code}
+                                                        colorCalculaterIndex={index}
                                                     />
                                                 </li>
                                             ))}
@@ -164,15 +181,16 @@ const CountryList: React.FC = () => {
                             }
                         </ul>
                     </div>
-                    <div className='ml-6 max-h-screen flex mt-[50px] p-6 bg-white rounded-lg sticky top-0 z-10'>
+                    <div className='phone:ml-2 tablet:ml-6 max-h-screen flex mt-[50px] phone:p-2 tablet:p-6 bg-white rounded-lg sticky top-0 z-10'>
                         <CountryUniqDisplay countryCode={selectedCountry} />
                     </div>
                 </div>
 
+                {/* 3. Section */}
                 {/* Pagination */}
                 {!groupBy && (
                     <ReactPaginate
-                        className='text-white text-2xl shadow-lg shadow-slate-500 flex justify-between px-32 mt-10 mb-20'
+                        className='text-white phone:text-[12px] tablet:text-2xl shadow-lg shadow-slate-500 flex justify-between phone:px-4 tablet:px-32 mt-10 mb-20'
                         pageCount={Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE)}
                         pageRangeDisplayed={3}
                         marginPagesDisplayed={1}
@@ -183,7 +201,6 @@ const CountryList: React.FC = () => {
                 )}
             </div>
         </div>
-
     );
 };
 

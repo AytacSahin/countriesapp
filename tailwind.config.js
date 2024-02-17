@@ -1,12 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: ["./src/**/*.{html,js,tsx,ts}"],
   theme: {
     extend: {
-      transitionProperty: {
-        'width': 'width',
-        'transform': 'transform',
-      },
       screens: {
         'phone': '375px',
         'tablet': '767px',
