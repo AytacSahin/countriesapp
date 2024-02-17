@@ -1,46 +1,43 @@
-# Getting Started with Create React App
+# Countries Explorer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bu proje, Apollo Client kullanılarak ülkelerle ilgili GraphQL API'sinden veri çeken bir React uygulamasını içermektedir. Proje, ülkeleri listeler, arama yapma, gruplama, seçilen ülkenin detaylarını görüntüleme ve sayfalama gibi özelliklere sahiptir.
 
-## Available Scripts
+## Demo
 
-In the project directory, you can run:
+[Proje Demosu](https://countriesapp-chi.vercel.app/)
 
-### `npm start`
+## Proje Tanıtım Videosu
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[![Proje Tanıtım Videosu]](src/assets/video/screen-record.mp4)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Kurulum
 
-### `npm test`
+Projeyi yerel makinanıza klonlayın ve aşağıdaki adımları takip edin:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Proje klasörüne gidin: `cd countries-explorer`
+2. Bağımlılıkları yükleyin: `npm install`
+3. Uygulamayı başlatın: `npm start`
 
-### `npm run build`
+## Kullanım
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Ana sayfada ülkeleri listeler.
+- Arama çubuğu ile ülkeleri isme göre filtreleyebilirsiniz.
+- "Group By" dropdown ile ülkeleri dil veya kıta gibi kriterlere göre gruplayabilirsiniz.
+- Ülkelerin üzerine tıklayarak detaylarını görebilir ve seçebilirsiniz.
+- Sayfalama özelliği ile çok sayıda ülkeyi yönetebilirsiniz.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Teknolojiler
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- React
+- Apollo Client
+- GraphQL
+- TypeScript
+- Tailwind CSS
 
-### `npm run eject`
+## Katkıda Bulunma
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Bu depoyu fork edin.
+2. Yeni bir branch oluşturun: `git checkout -b yeni-ozellik`
+3. Değişikliklerinizi commit edin: `git commit -am 'Yeni özellik: <özellik_adı>'`
+4. Branch'inizi push edin: `git push origin yeni-ozellik`
+5. Pull request oluşturun.
