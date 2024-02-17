@@ -15,8 +15,8 @@ const GroupByDropdown: React.FC<GroupByDropdownProps> = ({ value, onChange }) =>
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 
     const handleGroupBy = (val: string) => {
-        onChange(val); // onChange prop'unu çağırarak seçilen değeri iletebilirsiniz
-        toggleDropdown(); // Dropdown'u kapatmak için
+        onChange(val);
+        toggleDropdown();
     };
 
     useEffect(() => {
@@ -39,7 +39,7 @@ const GroupByDropdown: React.FC<GroupByDropdownProps> = ({ value, onChange }) =>
                     onClick={toggleDropdown}
                     className="inline-flex w-full text-[20px] text-[#1C242E] border-[#1C242E] focus:outline-none focus:ring-0 focus:border-black px-4 py-4"
                 >
-                    <span className="w-[80px]">Group By</span>
+                    <span className="w-[80px]">{value === 'name' ? 'Country Name' : value === 'code' ? 'Country Code' : value === 'languages' ? 'Languages' : value === 'continent' ? 'Continent' : 'Group By'}</span>
                     <svg className="w-3 h-3 ms-8 my-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>
@@ -47,12 +47,12 @@ const GroupByDropdown: React.FC<GroupByDropdownProps> = ({ value, onChange }) =>
                 <div
                     ref={dropdownRef}
                     id="dropdown-menu"
-                    className={`absolute mt-2 w-full bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 rounded-lg ${isOpen ? 'block' : 'hidden'}`}
+                    className={`absolute mt-2 w-full bg-white shadow-2xl p-1 space-y-1 rounded-lg ${isOpen ? 'block' : 'hidden'}`}
                 >
-                    <div onClick={() => handleGroupBy('name')} className="block px-2 py-1 text-gray-700 cursor-pointer">Country Name</div>
-                    <div onClick={() => handleGroupBy('code')} className="block px-2 py-1 text-gray-700 cursor-pointer">Country Code</div>
-                    <div onClick={() => handleGroupBy('languages')} className="block px-2 py-1 text-gray-700 cursor-pointer">Languages</div>
-                    <div onClick={() => handleGroupBy('continent')} className="block px-2 py-1 text-gray-700 cursor-pointer">Continent</div>
+                    <div onClick={() => handleGroupBy('name')} className="block px-2 py-1 text-gray-700 cursor-pointer hover:bg-opacity-20 hover:bg-slate-400">Country Name</div>
+                    <div onClick={() => handleGroupBy('code')} className="block px-2 py-1 text-gray-700 cursor-pointer hover:bg-opacity-20 hover:bg-slate-400">Country Code</div>
+                    <div onClick={() => handleGroupBy('languages')} className="block px-2 py-1 text-gray-700 cursor-pointer hover:bg-opacity-20 hover:bg-slate-400">Languages</div>
+                    <div onClick={() => handleGroupBy('continent')} className="block px-2 py-1 text-gray-700 cursor-pointer hover:bg-opacity-20 hover:bg-slate-400">Continent</div>
                 </div>
             </div>
         </div>

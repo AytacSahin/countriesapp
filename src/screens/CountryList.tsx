@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useCountryQuery } from '../services/CountryService';
-import CountryCard from './CountryCard';
-import SearchInput from './SearchInput';
-import GroupByDropdown from './GroupByDropdown';
-import ClearButton from './ClearButton';
-import CountryUniqDisplay from './CountryUniqDisplay';
+import CountryCard from '../components/CountryCard';
+import SearchInput from '../components/SearchInput';
+import GroupByDropdown from '../components/GroupByDropdown';
+import ClearButton from '../components/ClearButton';
+import CountryUniqDisplay from '../components/CountryUniqDisplay';
 import ReactPaginate from 'react-paginate';
 
 interface Language {
@@ -110,53 +110,50 @@ const CountryList: React.FC = () => {
     }));
 
     return (
-        <div className="flex flex-col items-center justify-between h-screen bg-repeat bg-center" style={{ backgroundImage: 'url("../../assets/images/bgimage-black.png")' }}>
-            <div className="my-6">
-                <div className='flex relative justify-between gap-4'>
-                    <SearchInput value={searchQuery} onChange={setSearchQuery} />
-                    <GroupByDropdown value={groupBy} onChange={setGroupBy} />
-                    <ClearButton onClick={clearFilter} />
-                </div>
-
-                {/* Display grouped countries */}
-                <div className='flex'>
-                    <div className='w-full'>
-                        <ul>
-                            {paginatedCountries.map(({ group, countries }) => (
-                                <li key={group}>
-                                    <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
-                                    <ul>
-                                        {countries.map((country: Country) => (
-                                            <li key={country.code}>
-                                                <CountryCard
-                                                    country={country}
-                                                    onCountryClick={handleCountryClick}
-                                                    isSelected={selectedCountry === country.code}
-                                                />
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div className='max-w-md ml-6 mt-[50px] p-6 bg-white rounded-lg'>
-                        <CountryUniqDisplay countryCode={selectedCountry} />
-                    </div>
-                </div>
-
-                {/* Pagination */}
-                <ReactPaginate
-                    pageCount={Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE)}
-                    pageRangeDisplayed={3}
-                    marginPagesDisplayed={1}
-                    onPageChange={({ selected }) => setCurrentPage(selected)}
-                    containerClassName="pagination"
-                    activeClassName="active"
-                />
+        <div className="p-6">
+            <div className='flex relative justify-between gap-4'>
+                <SearchInput value={searchQuery} onChange={setSearchQuery} />
+                <GroupByDropdown value={groupBy} onChange={setGroupBy} />
+                <ClearButton onClick={clearFilter} />
             </div>
-        </div>
 
+            {/* Display grouped countries */}
+            <div className='flex'>
+                <div className='w-full'>
+                    <ul>
+                        {paginatedCountries.map(({ group, countries }) => (
+                            <li key={group}>
+                                <h2 className="text-xl font-semibold mt-4 text-white">{group}</h2>
+                                <ul>
+                                    {countries.map((country: Country) => (
+                                        <li key={country.code}>
+                                            <CountryCard
+                                                country={country}
+                                                onCountryClick={handleCountryClick}
+                                                isSelected={selectedCountry === country.code}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className='max-w-md ml-6 mt-[50px] p-6 bg-white rounded-lg'>
+                    <CountryUniqDisplay countryCode={selectedCountry} />
+                </div>
+            </div>
+
+            {/* Pagination */}
+            <ReactPaginate
+                pageCount={Math.ceil(Object.values(groupedCountries).flat().length / ITEMS_PER_PAGE)}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={1}
+                onPageChange={({ selected }) => setCurrentPage(selected)}
+                containerClassName="pagination"
+                activeClassName="active"
+            />
+        </div>
     );
 };
 
